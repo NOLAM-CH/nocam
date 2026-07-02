@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/nocam-icon.png" width="170" alt="NoCam — NOLAM"></p>
+
 # 📷 NoCam
 
 > **NOLAM, NoCam.** *(chantez-le, vous l'avez déjà en tête)* 🎵
@@ -47,7 +49,6 @@ même, et elle ne se mettra **jamais** à jour dans son dos.
 
 ```bat
 python -m pip install opencv-python pillow pyinstaller pygrabber comtypes
-python make_icon.py
 python nocam.py --selftest
 python -m PyInstaller --noconfirm --windowed --name NoCam --icon nocam.ico --add-data "nocam.ico;." nocam.py
 :: -> dist\NoCam\  (garder le dossier entier ; onedir = démarrage rapide sur petites machines)
