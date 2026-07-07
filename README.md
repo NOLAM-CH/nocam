@@ -50,8 +50,9 @@ même, et elle ne se mettra **jamais** à jour dans son dos.
 ```bat
 python -m pip install opencv-python pillow pyinstaller pygrabber comtypes
 python nocam.py --selftest
-python -m PyInstaller --noconfirm --windowed --name NoCam --icon nocam.ico --add-data "nocam.ico;." nocam.py
+python -m PyInstaller --noconfirm --windowed --name NoCam --icon nocam.ico --add-data "nocam.ico;." --add-data "assets/nolam-logo.png;." nocam.py
 :: -> dist\NoCam\  (garder le dossier entier ; onedir = démarrage rapide sur petites machines)
+:: le --add-data du logo est requis depuis la v1.1 (splash NOLAM au lancement)
 ```
 
 Binaire non signé → SmartScreen demandera confirmation au premier lancement.
