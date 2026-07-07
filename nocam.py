@@ -281,7 +281,10 @@ def main():
     save_dir = camera_roll_path()
     cfg = load_cfg()
     if "camera_index" in cfg:
-        cam_index = int(cfg["camera_index"])          # choix memorise (⟳)
+        try:
+            cam_index = int(cfg["camera_index"])       # choix memorise (⟳)
+        except (TypeError, ValueError, KeyError):
+            cam_index = pick_default_camera()
     else:
         cam_index = pick_default_camera()             # 1er lancement: ARRIERE
     log(f"start — pellicule={save_dir} cam={cam_index}")
@@ -383,6 +386,8 @@ def main():
     def start_camera(index):
         if state["grab"]:
             state["grab"].stop()
+            state["grab"].join(timeout=1.0)
+            state["grab"] = None
         if state["cap"]:
             try:
                 state["cap"].release()
@@ -433,8 +438,12 @@ def main():
             th = stage.winfo_height() or scr_h
             x, y, cw, ch = compute_crop(fw, fh, tw, th, ZOOM_STEPS[state["zoom_i"]])
             shot = frame[y:y + ch, x:x + cw]
-            name = f"Foto_{datetime.datetime.now():%Y-%m-%d_%H-%M-%S}.jpg"
-            path = os.path.join(save_dir, name)
+            base = f"Foto_{datetime.datetime.now():%Y-%m-%d_%H-%M-%S}"
+            path = os.path.join(save_dir, base + ".jpg")
+            n = 2
+            while os.path.exists(path):
+                path = os.path.join(save_dir, f"{base}_{n}.jpg")
+                n += 1
             ok, buf = cv2.imencode(".jpg", shot, [cv2.IMWRITE_JPEG_QUALITY, 92])
             if not ok:
                 raise RuntimeError("encode JPEG KO")
@@ -452,6 +461,7 @@ def main():
         try:
             if state["grab"]:
                 state["grab"].stop()
+                state["grab"].join(timeout=1.0)
             if state["cap"]:
                 state["cap"].release()
         except Exception:
